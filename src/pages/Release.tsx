@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 interface Release {
   title: string;
-  artist: string;
+  artist: string; // We'll keep this in the interface
   cover_url: string;
   links_by_platform: {
     [key: string]: { url: string; }
@@ -33,9 +33,10 @@ export default function Release() {
         return;
       }
 
+      // If artist doesn't exist in data, use a fallback value
       setRelease({
         title: data.title,
-        artist: data.artist,
+        artist: data.artist || "Unknown Artist", // Add fallback for missing artist field
         cover_url: data.cover_url,
         links_by_platform: data.links_by_platform as { [key: string]: { url: string } }
       });
