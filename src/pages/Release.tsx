@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +7,7 @@ import { toast } from "sonner";
 
 interface Release {
   title: string;
-  artist: string; // We'll keep this in the interface
+  artist: string;
   cover_url: string;
   links_by_platform: {
     [key: string]: { url: string; }
@@ -33,12 +32,11 @@ export default function Release() {
         return;
       }
 
-      // Since the database doesn't have an artist field, we'll use a fallback
       setRelease({
         title: data.title,
-        artist: "Unknown Artist", // Fixed: Use a fallback value since artist doesn't exist in database
+        artist: data.artist,
         cover_url: data.cover_url,
-        links_by_platform: data.links_by_platform as { [key: string]: { url: string } }
+        links_by_platform: data.links_by_platform
       });
       setIsLoading(false);
     }
@@ -75,7 +73,6 @@ export default function Release() {
         console.error('Ошибка при шаринге:', error);
       }
     } else {
-      // Fallback for browsers that don't support Web Share API
       navigator.clipboard.writeText(currentUrl)
         .then(() => toast.success("Ссылка скопирована в буфер обмена"))
         .catch(() => toast.error("Не удалось скопировать ссылку"));
