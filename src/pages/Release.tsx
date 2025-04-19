@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Apple, Youtube, Spotify, Share } from "lucide-react";
+import { Apple, Youtube, Music, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Release {
@@ -31,7 +31,11 @@ export default function Release() {
         return;
       }
 
-      setRelease(data);
+      setRelease({
+        title: data.title,
+        cover_url: data.cover_url,
+        links_by_platform: data.links_by_platform as { [key: string]: { url: string } }
+      });
       setIsLoading(false);
     }
 
@@ -42,7 +46,7 @@ export default function Release() {
   if (!release) return <div>Релиз не найден</div>;
 
   const platformIcons = {
-    spotify: <Spotify className="w-5 h-5" />,
+    spotify: <Music className="w-5 h-5" />,
     appleMusic: <Apple className="w-5 h-5" />,
     youtube: <Youtube className="w-5 h-5" />
   };
