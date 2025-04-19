@@ -33,10 +33,10 @@ export default function Release() {
         return;
       }
 
-      // If artist doesn't exist in data, use a fallback value
+      // Since the database doesn't have an artist field, we'll use a fallback
       setRelease({
         title: data.title,
-        artist: data.artist || "Unknown Artist", // Add fallback for missing artist field
+        artist: "Unknown Artist", // Fixed: Use a fallback value since artist doesn't exist in database
         cover_url: data.cover_url,
         links_by_platform: data.links_by_platform as { [key: string]: { url: string } }
       });
