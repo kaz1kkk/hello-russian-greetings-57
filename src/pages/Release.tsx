@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +13,39 @@ interface Release {
     [key: string]: { url: string; }
   };
 }
+
+const ALLOWED_PLATFORMS = {
+  spotify: {
+    name: "Spotify",
+    icon: <Music className="w-6 h-6" />,
+    color: "bg-[#1DB954]/90 hover:bg-[#1DB954]"
+  },
+  appleMusic: {
+    name: "Apple Music",
+    icon: <Apple className="w-6 h-6" />,
+    color: "bg-[#fb233b]/90 hover:bg-[#fb233b]"
+  },
+  youtubeMusic: {
+    name: "YouTube Music",
+    icon: <Youtube className="w-6 h-6" />,
+    color: "bg-[#FF0000]/90 hover:bg-[#FF0000]"
+  },
+  yandex: {
+    name: "Яндекс Музыка",
+    icon: <Music className="w-6 h-6" />,
+    color: "bg-[#FFCC00]/90 hover:bg-[#FFCC00] text-black"
+  },
+  soundcloud: {
+    name: "SoundCloud",
+    icon: <Music className="w-6 h-6" />,
+    color: "bg-[#ff5500]/90 hover:bg-[#ff5500]"
+  },
+  vk: {
+    name: "VK Музыка",
+    icon: <Music className="w-6 h-6" />,
+    color: "bg-[#0077FF]/90 hover:bg-[#0077FF]"
+  }
+};
 
 export default function Release() {
   const { slug } = useParams();
@@ -53,18 +85,6 @@ export default function Release() {
   if (isLoading) return null;
   if (!release) return <div>Релиз не найден</div>;
 
-  const platformIcons = {
-    spotify: <Music className="w-6 h-6" />,
-    appleMusic: <Apple className="w-6 h-6" />,
-    youtube: <Youtube className="w-6 h-6" />
-  };
-
-  const platformColors = {
-    spotify: "bg-[#1DB954]/90 hover:bg-[#1DB954]",
-    appleMusic: "bg-[#fb233b]/90 hover:bg-[#fb233b]",
-    youtube: "bg-[#FF0000]/90 hover:bg-[#FF0000]"
-  };
-
   const handleShare = async () => {
     const currentUrl = window.location.href;
     
@@ -85,14 +105,18 @@ export default function Release() {
     }
   };
 
+  const filteredLinks = Object.entries(release.links_by_platform)
+    .filter(([platform]) => platform in ALLOWED_PLATFORMS)
+    .sort(([a], [b]) => a.localeCompare(b));
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white p-4">
       <div className="w-full max-w-md space-y-8 backdrop-blur-lg bg-white/5 p-8 rounded-2xl border border-white/10">
         <div className="flex flex-col items-center">
           <div className="relative group">
             <img 
-              src={release?.cover_url} 
-              alt={release?.title}
+              src={release.cover_url} 
+              alt={release.title}
               className="w-64 h-64 rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
@@ -100,9 +124,9 @@ export default function Release() {
           
           <div className="mt-6 text-center space-y-2">
             <h1 className="text-2xl font-medium bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-              {release?.title}
+              {release.title}
             </h1>
-            <p className="text-lg text-zinc-400">{release?.artist}</p>
+            <p className="text-lg text-zinc-400">{release.artist}</p>
           </div>
           
           <Button 
@@ -116,28 +140,28 @@ export default function Release() {
         </div>
 
         <div className="space-y-3">
-          {release && Object.entries(release.links_by_platform).map(([platform, { url }]) => (
-            <Button
-              key={platform}
-              className={`w-full ${platformColors[platform as keyof typeof platformColors] || "bg-zinc-600/90 hover:bg-zinc-600"} transition-colors duration-300`}
-              asChild
-            >
-              <a 
-                href={url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center justify-center gap-3 py-6"
+          {filteredLinks.map(([platform, { url }]) => {
+            const platformConfig = ALLOWED_PLATFORMS[platform as keyof typeof ALLOWED_PLATFORMS];
+            return (
+              <Button
+                key={platform}
+                className={`w-full ${platformConfig.color} transition-colors duration-300`}
+                asChild
               >
-                {platformIcons[platform as keyof typeof platformIcons]}
-                <span className="text-base">
-                  {platform === "spotify" ? "Слушать в Spotify" :
-                   platform === "appleMusic" ? "Слушать в Apple Music" :
-                   platform === "youtube" ? "Смотреть на YouTube" :
-                   `Открыть в ${platform}`}
-                </span>
-              </a>
-            </Button>
-          ))}
+                <a 
+                  href={url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center justify-center gap-3 py-6"
+                >
+                  {platformConfig.icon}
+                  <span className="text-base">
+                    {`Слушать в ${platformConfig.name}`}
+                  </span>
+                </a>
+              </Button>
+            );
+          })}
         </div>
       </div>
     </div>
