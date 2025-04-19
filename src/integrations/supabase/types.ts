@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       releases: {
         Row: {
+          artist: string
           cover_url: string
           created_at: string
           id: string
@@ -20,6 +21,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          artist: string
           cover_url: string
           created_at?: string
           id?: string
@@ -29,6 +31,7 @@ export type Database = {
           title: string
         }
         Update: {
+          artist?: string
           cover_url?: string
           created_at?: string
           id?: string

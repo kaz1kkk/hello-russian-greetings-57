@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -85,8 +86,8 @@ export default function Release() {
         <div className="flex flex-col items-center">
           <div className="relative group">
             <img 
-              src={release.cover_url} 
-              alt={release.title}
+              src={release?.cover_url} 
+              alt={release?.title}
               className="w-64 h-64 rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
@@ -94,9 +95,9 @@ export default function Release() {
           
           <div className="mt-6 text-center space-y-2">
             <h1 className="text-2xl font-medium bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-              {release.title}
+              {release?.title}
             </h1>
-            <p className="text-lg text-zinc-400">{release.artist}</p>
+            <p className="text-lg text-zinc-400">{release?.artist}</p>
           </div>
           
           <Button 
@@ -110,7 +111,7 @@ export default function Release() {
         </div>
 
         <div className="space-y-3">
-          {Object.entries(release.links_by_platform).map(([platform, { url }]) => (
+          {release && Object.entries(release.links_by_platform).map(([platform, { url }]) => (
             <Button
               key={platform}
               className={`w-full ${platformColors[platform as keyof typeof platformColors] || "bg-zinc-600/90 hover:bg-zinc-600"} transition-colors duration-300`}
