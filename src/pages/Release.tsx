@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 interface Release {
   title: string;
+  artist: string;
   cover_url: string;
   links_by_platform: {
     [key: string]: { url: string; }
@@ -34,6 +35,7 @@ export default function Release() {
 
       setRelease({
         title: data.title,
+        artist: data.artist,
         cover_url: data.cover_url,
         links_by_platform: data.links_by_platform as { [key: string]: { url: string } }
       });
@@ -47,15 +49,15 @@ export default function Release() {
   if (!release) return <div>Релиз не найден</div>;
 
   const platformIcons = {
-    spotify: <Music className="w-5 h-5" />,
-    appleMusic: <Apple className="w-5 h-5" />,
-    youtube: <Youtube className="w-5 h-5" />
+    spotify: <Music className="w-6 h-6" />,
+    appleMusic: <Apple className="w-6 h-6" />,
+    youtube: <Youtube className="w-6 h-6" />
   };
 
   const platformColors = {
-    spotify: "bg-[#1DB954] hover:bg-[#1ed760]",
-    appleMusic: "bg-[#fb233b] hover:bg-[#ff2d43]",
-    youtube: "bg-[#FF0000] hover:bg-[#ff1a1a]"
+    spotify: "bg-[#1DB954]/90 hover:bg-[#1DB954]",
+    appleMusic: "bg-[#fb233b]/90 hover:bg-[#fb233b]",
+    youtube: "bg-[#FF0000]/90 hover:bg-[#FF0000]"
   };
 
   const handleShare = async () => {
@@ -80,39 +82,55 @@ export default function Release() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-white p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white p-4">
+      <div className="w-full max-w-md space-y-8 backdrop-blur-lg bg-white/5 p-8 rounded-2xl border border-white/10">
         <div className="flex flex-col items-center">
-          <img 
-            src={release.cover_url} 
-            alt={release.title}
-            className="w-64 h-64 rounded-lg shadow-2xl"
-          />
-          <h1 className="mt-6 text-2xl font-medium text-center">{release.title}</h1>
+          <div className="relative group">
+            <img 
+              src={release.cover_url} 
+              alt={release.title}
+              className="w-64 h-64 rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+          </div>
+          
+          <div className="mt-6 text-center space-y-2">
+            <h1 className="text-2xl font-medium bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+              {release.title}
+            </h1>
+            <p className="text-lg text-zinc-400">{release.artist}</p>
+          </div>
           
           <Button 
             variant="ghost" 
             size="icon" 
-            className="mt-2 text-gray-600 hover:text-gray-900" 
+            className="mt-4 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" 
             onClick={handleShare}
           >
             <Share className="w-5 h-5" />
           </Button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {Object.entries(release.links_by_platform).map(([platform, { url }]) => (
             <Button
               key={platform}
-              className={`w-full ${platformColors[platform as keyof typeof platformColors] || "bg-gray-600 hover:bg-gray-700"}`}
+              className={`w-full ${platformColors[platform as keyof typeof platformColors] || "bg-zinc-600/90 hover:bg-zinc-600"} transition-colors duration-300`}
               asChild
             >
-              <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+              <a 
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center justify-center gap-3 py-6"
+              >
                 {platformIcons[platform as keyof typeof platformIcons]}
-                {platform === "spotify" ? "Слушать в Spotify" :
-                 platform === "appleMusic" ? "Слушать в Apple Music" :
-                 platform === "youtube" ? "Смотреть на YouTube" :
-                 `Открыть в ${platform}`}
+                <span className="text-base">
+                  {platform === "spotify" ? "Слушать в Spotify" :
+                   platform === "appleMusic" ? "Слушать в Apple Music" :
+                   platform === "youtube" ? "Смотреть на YouTube" :
+                   `Открыть в ${platform}`}
+                </span>
               </a>
             </Button>
           ))}
