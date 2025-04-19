@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,32 +19,32 @@ const ALLOWED_PLATFORMS = {
   spotify: {
     name: "Spotify",
     icon: <Music className="w-6 h-6" />,
-    color: "bg-[#1DB954]/90 hover:bg-[#1DB954]"
+    color: "bg-gradient-to-br from-[#1DB954]/90 to-[#1DB954]/70 hover:from-[#1DB954] hover:to-[#1DB954]"
   },
   appleMusic: {
     name: "Apple Music",
     icon: <Apple className="w-6 h-6" />,
-    color: "bg-[#fb233b]/90 hover:bg-[#fb233b]"
+    color: "bg-gradient-to-br from-[#fb233b]/90 to-[#fb233b]/70 hover:from-[#fb233b] hover:to-[#fb233b]"
   },
   youtubeMusic: {
     name: "YouTube Music",
     icon: <Youtube className="w-6 h-6" />,
-    color: "bg-[#FF0000]/90 hover:bg-[#FF0000]"
+    color: "bg-gradient-to-br from-[#FF0000]/90 to-[#FF0000]/70 hover:from-[#FF0000] hover:to-[#FF0000]"
   },
   yandex: {
     name: "Яндекс Музыка",
     icon: <Music className="w-6 h-6" />,
-    color: "bg-[#FFCC00]/90 hover:bg-[#FFCC00] text-black"
+    color: "bg-gradient-to-br from-[#FFCC00]/90 to-[#FFCC00]/70 hover:from-[#FFCC00] hover:to-[#FFCC00] text-black"
   },
   soundcloud: {
     name: "SoundCloud",
     icon: <Music className="w-6 h-6" />,
-    color: "bg-[#ff5500]/90 hover:bg-[#ff5500]"
+    color: "bg-gradient-to-br from-[#ff5500]/90 to-[#ff5500]/70 hover:from-[#ff5500] hover:to-[#ff5500]"
   },
   vk: {
     name: "VK Музыка",
     icon: <Music className="w-6 h-6" />,
-    color: "bg-[#0077FF]/90 hover:bg-[#0077FF]"
+    color: "bg-gradient-to-br from-[#0077FF]/90 to-[#0077FF]/70 hover:from-[#0077FF] hover:to-[#0077FF]"
   }
 };
 
@@ -145,7 +146,9 @@ export default function Release() {
             return (
               <Button
                 key={platform}
-                className={`w-full ${platformConfig.color} transition-colors duration-300`}
+                className={`w-full ${platformConfig.color} transition-all duration-300 ease-in-out 
+                  shadow-lg hover:shadow-xl text-white 
+                  border border-white/10 hover:border-white/20`}
                 asChild
               >
                 <a 
