@@ -33,11 +33,16 @@ export default function Release() {
         return;
       }
 
+      // Cast the JSON data to our expected type
+      const links = typeof data.links_by_platform === 'string' 
+        ? JSON.parse(data.links_by_platform) 
+        : data.links_by_platform;
+
       setRelease({
         title: data.title,
-        artist: data.artist,
+        artist: data.artist || "Unknown Artist", // Provide default in case artist is missing
         cover_url: data.cover_url,
-        links_by_platform: data.links_by_platform
+        links_by_platform: links
       });
       setIsLoading(false);
     }
