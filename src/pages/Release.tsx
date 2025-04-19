@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Apple, Youtube, Music, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Release {
   title: string;
@@ -57,6 +58,27 @@ export default function Release() {
     youtube: "bg-[#FF0000] hover:bg-[#ff1a1a]"
   };
 
+  const handleShare = async () => {
+    const currentUrl = window.location.href;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: release.title,
+          text: `Слушай релиз "${release.title}" на любимой платформе`,
+          url: currentUrl,
+        });
+      } catch (error) {
+        console.error('Ошибка при шаринге:', error);
+      }
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      navigator.clipboard.writeText(currentUrl)
+        .then(() => toast.success("Ссылка скопирована в буфер обмена"))
+        .catch(() => toast.error("Не удалось скопировать ссылку"));
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-white p-4">
       <div className="w-full max-w-md space-y-8">
@@ -67,6 +89,15 @@ export default function Release() {
             className="w-64 h-64 rounded-lg shadow-2xl"
           />
           <h1 className="mt-6 text-2xl font-medium text-center">{release.title}</h1>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="mt-2 text-gray-600 hover:text-gray-900" 
+            onClick={handleShare}
+          >
+            <Share className="w-5 h-5" />
+          </Button>
         </div>
 
         <div className="space-y-4">
