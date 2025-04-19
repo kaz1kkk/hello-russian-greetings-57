@@ -24,28 +24,83 @@ async function getSpotifyAccessToken(): Promise<string> {
   return data.access_token;
 }
 
+// Extract Spotify ID from various URL formats
+function extractSpotifyId(url: string): string | null {
+  try {
+    // Handle different Spotify URL formats
+    const urlObj = new URL(url);
+    
+    if (!urlObj.hostname.includes('spotify.com')) {
+      return null;
+    }
+    
+    // Extract the ID from different URL patterns
+    const pathParts = urlObj.pathname.split('/');
+    
+    // Format: spotify.com/track/ID or spotify.com/album/ID
+    if (pathParts.length >= 3) {
+      return pathParts[2].split('?')[0];
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Invalid URL format:', error);
+    return null;
+  }
+}
+
 async function getSpotifyTrackDetails(spotifyUrl: string): Promise<{ title: string; artist: string; coverUrl: string }> {
-  const trackId = spotifyUrl.split('/').pop()?.split('?')[0];
-  if (!trackId) throw new Error('Invalid Spotify URL');
+  const trackId = extractSpotifyId(spotifyUrl);
+  
+  if (!trackId) {
+    throw new Error('Invalid Spotify URL format or missing ID');
+  }
+  
+  console.log('Extracted Spotify ID:', trackId);
 
   const accessToken = await getSpotifyAccessToken();
-  const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  
+  // Try to fetch as a track first
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  const data = await response.json();
-  if (!response.ok) {
-    console.error('Spotify API error:', data);
-    throw new Error('Failed to fetch track details from Spotify');
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        title: data.name,
+        artist: data.artists[0].name,
+        coverUrl: data.album.images[0].url,
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching track:', error);
   }
+  
+  // If track fetch fails, try as an album
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/albums/${trackId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  return {
-    title: data.name,
-    artist: data.artists[0].name,
-    coverUrl: data.album.images[0].url,
-  };
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        title: data.name,
+        artist: data.artists[0].name,
+        coverUrl: data.images[0].url,
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching album:', error);
+  }
+  
+  throw new Error('Failed to fetch details from Spotify - resource not found');
 }
 
 Deno.serve(async (req) => {
@@ -55,27 +110,50 @@ Deno.serve(async (req) => {
 
   try {
     const { spotifyUrl } = await req.json();
-    const encodedUrl = encodeURIComponent(spotifyUrl);
+    
+    if (!spotifyUrl || typeof spotifyUrl !== 'string') {
+      throw new Error('Invalid or missing spotifyUrl');
+    }
+    
+    console.log('Processing Spotify URL:', spotifyUrl);
     
     // Fetch Spotify track details first
     const spotifyDetails = await getSpotifyTrackDetails(spotifyUrl);
+    console.log('Spotify details fetched successfully:', spotifyDetails);
     
-    // Fetch data from Odesli API
-    const response = await fetch(`https://api.song.link/v1-alpha.1/links?url=${encodedUrl}`);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch from Odesli');
-    }
-
-    const linksByPlatform = {};
-    Object.entries(data.linksByPlatform).forEach(([platform, linkData]) => {
-      linksByPlatform[platform] = {
-        url: linkData.url
-      };
-    });
-
+    // Create a slug from the title
     const slug = slugify(spotifyDetails.title);
+    
+    // Initialize links object with Spotify
+    const linksByPlatform = {
+      spotify: {
+        url: spotifyUrl
+      }
+    };
+    
+    // Try to fetch data from Odesli API for other platforms
+    try {
+      const encodedUrl = encodeURIComponent(spotifyUrl);
+      const response = await fetch(`https://api.song.link/v1-alpha.1/links?url=${encodedUrl}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Add other platforms' links
+        Object.entries(data.linksByPlatform).forEach(([platform, linkData]: [string, any]) => {
+          linksByPlatform[platform] = {
+            url: linkData.url
+          };
+        });
+        
+        console.log('Odesli data fetched successfully');
+      } else {
+        console.log('Odesli API returned an error, using Spotify link only');
+      }
+    } catch (error) {
+      console.error('Failed to fetch from Odesli:', error);
+      // Continue with just the Spotify link
+    }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
