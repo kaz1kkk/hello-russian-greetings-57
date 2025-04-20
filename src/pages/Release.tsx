@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +10,7 @@ import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d738756
 import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d79b2492d1.png";
 import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
 import SoundCloudLogo from "/public/lovable-uploads/51d1f125-cff2-4caf-af99-1d80739b289b.png";
-import YandexLogo from "/public/lovable-uploads/c4309d3c-7b9e-435c-ac23-b29f94cdfcc8.png";
+import YandexLogo from "/public/lovable-uploads/fb0190c9-a778-48b7-a175-1fc791cb16a8.png";
 
 interface Release {
   title: string;
@@ -37,7 +36,7 @@ const ALLOWED_PLATFORMS = {
   },
   yandex: {
     name: "Яндекс Музыка",
-    icon: <Music className="w-5 h-5" />,
+    icon: <img src={YandexLogo} alt="Yandex Music" className="w-5 h-5" />,
   },
   soundcloud: {
     name: "SoundCloud",
