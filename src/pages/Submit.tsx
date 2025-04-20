@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,9 +68,29 @@ export default function Submit() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success('Вы успешно вышли из аккаунта');
+    } catch (error: any) {
+      toast.error('Ошибка при выходе из аккаунта');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6 glass p-8 rounded-xl">
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Выйти
+          </Button>
+        </div>
+        
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-medium text-gradient">Создать мульти-линк</h1>
           <p className="text-muted-foreground">Используйте Spotify ссылку или UPC/EAN код</p>
@@ -92,7 +111,7 @@ export default function Submit() {
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Дополнительные платформы:</p>
+            <p className="text-sm text-muted-foreground">Д��полнительные платформы:</p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
