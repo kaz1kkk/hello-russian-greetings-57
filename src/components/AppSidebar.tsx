@@ -23,7 +23,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild active={location.pathname === "/"}>
+                <SidebarMenuButton asChild isActive={location.pathname === "/"}>
                   <Link to="/">
                     <LinkIcon />
                     <span>Все ссылки</span>
@@ -31,7 +31,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild active={location.pathname === "/submit"}>
+                <SidebarMenuButton asChild isActive={location.pathname === "/submit"}>
                   <Link to="/submit">
                     <Plus />
                     <span>Создать ссылку</span>
