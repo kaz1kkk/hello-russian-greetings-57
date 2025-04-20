@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,14 +71,11 @@ export default function Release() {
       }
 
       if (data) {
-        // If there's a redirect_url, redirect to it
         if (data.redirect_url) {
-          // Check if the URL has a protocol, if not add https://
           const redirectUrl = data.redirect_url.startsWith('http') 
             ? data.redirect_url 
             : `https://${data.redirect_url}`;
             
-          // Use window.location.href for external redirects
           window.location.href = redirectUrl;
           return;
         }
@@ -93,34 +91,51 @@ export default function Release() {
           redirect_url: data.redirect_url,
           links_by_platform: links
         });
+
+        // Update document title and meta tags
+        document.title = `${data.artist} - ${data.title}`;
+        // Update meta tags
+        updateMetaTags(data.title, data.artist, data.cover_url);
       }
       setIsLoading(false);
     }
 
+    // Reset title when component unmounts
+    return () => {
+      document.title = "Music Label Multi-Links";
+    };
+
     fetchRelease();
   }, [slug]);
 
-  if (isLoading) return null;
-  if (!release) return <div>Релиз не найден</div>;
+  // Function to update meta tags
+  const updateMetaTags = (title: string, artist: string, coverUrl: string) => {
+    // Update Open Graph meta tags
+    const metaTags = {
+      'og:title': `${artist} - ${title}`,
+      'og:description': `Слушай релиз "${title}" от ${artist} на любимой платформе`,
+      'og:image': coverUrl,
+      'twitter:title': `${artist} - ${title}`,
+      'twitter:description': `Слушай релиз "${title}" от ${artist} на любимой платформе`,
+      'twitter:image': coverUrl,
+      'description': `Слушай релиз "${title}" от ${artist} на любимой платформе`
+    };
 
-  const handleShare = async () => {
-    const currentUrl = window.location.href;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: release.title,
-          text: `Слушай релиз "${release.title}" на любимой платформе`,
-          url: currentUrl,
-        });
-      } catch (error) {
-        console.error('Ошибка при шаринге:', error);
+    Object.entries(metaTags).forEach(([name, content]) => {
+      let element = document.querySelector(`meta[property="${name}"]`) || 
+                    document.querySelector(`meta[name="${name}"]`);
+      
+      if (!element) {
+        element = document.createElement('meta');
+        if (name.startsWith('og:')) {
+          element.setAttribute('property', name);
+        } else {
+          element.setAttribute('name', name);
+        }
+        document.head.appendChild(element);
       }
-    } else {
-      navigator.clipboard.writeText(currentUrl)
-        .then(() => toast.success("Ссылка скопирована в буфер обмена"))
-        .catch(() => toast.error("Не удалось скопировать ссылку"));
-    }
+      element.setAttribute('content', content);
+    });
   };
 
   const filteredLinks = Object.entries(release.links_by_platform)
