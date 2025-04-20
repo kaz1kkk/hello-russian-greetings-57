@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Apple, Youtube, Music, Share } from "lucide-react";
+import { Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -10,7 +10,7 @@ import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d738756
 import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d79b2492d1.png";
 import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
 import SoundCloudLogo from "/public/lovable-uploads/51d1f125-cff2-4caf-af99-1d80739b289b.png";
-import YandexLogo from "/public/lovable-uploads/3dcf4513-80ca-4e24-8830-7e5cc02a1534.png";
+import YandexLogo from "/public/lovable-uploads/c4309d3c-7b9e-435c-ac23-b29f94cdfcc8.png";
 
 interface Release {
   title: string;
@@ -24,27 +24,27 @@ interface Release {
 const ALLOWED_PLATFORMS = {
   spotify: {
     name: "Spotify",
-    icon: <img src={SpotifyLogo} alt="Spotify" className="w-8 h-8" />,
+    icon: <img src={SpotifyLogo} alt="Spotify" className="w-6 h-6" />,
     color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   appleMusic: {
     name: "Apple Music",
-    icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-8 h-8" />,
+    icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-6 h-6" />,
     color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   youtubeMusic: {
     name: "YouTube Music",
-    icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-8 h-8" />,
+    icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-6 h-6" />,
     color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   yandex: {
     name: "Яндекс Музыка",
-    icon: <img src={YandexLogo} alt="Yandex Music" className="w-8 h-8" />,
+    icon: <img src={YandexLogo} alt="Yandex Music" className="w-6 h-6" />,
     color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   soundcloud: {
     name: "SoundCloud",
-    icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-8 h-8" />,
+    icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-6 h-6" />,
     color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   vk: {
@@ -118,7 +118,7 @@ export default function Release() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white p-4">
-      <div className="w-full max-w-md space-y-8 backdrop-blur-xl bg-white/5 p-8 rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.36)] transition-all duration-300 hover:shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
+      <div className="w-full max-w-md space-y-8 backdrop-blur-xl bg-white/5 p-8 rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.36)] transition-all duration-300">
         <div className="flex flex-col items-center">
           <div className="relative group perspective">
             <img 
@@ -146,7 +146,7 @@ export default function Release() {
           </Button>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 w-full">
           {filteredLinks.map(([platform, { url }]) => {
             const platformConfig = ALLOWED_PLATFORMS[platform as keyof typeof ALLOWED_PLATFORMS];
             return (
@@ -155,14 +155,11 @@ export default function Release() {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block relative"
+                className="group block"
               >
-                <div className="absolute -inset-0.5 bg-white opacity-20 rounded-xl blur-sm transition-all duration-500 animate-pulse group-hover:opacity-30" />
-                <div className="absolute inset-0 rounded-xl border border-white/20 animate-[border-glow_2s_ease-in-out_infinite]" />
                 <Button
                   className={`w-full relative ${platformConfig.color} transition-all duration-300 ease-out 
-                    shadow-lg hover:shadow-xl text-white z-10 border-0
-                    bg-opacity-90 hover:bg-opacity-100 backdrop-blur-sm
+                    text-white z-10 border-0 
                     hover:translate-y-[-2px] hover:scale-[1.01]`}
                   asChild
                 >
