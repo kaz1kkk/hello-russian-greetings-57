@@ -42,11 +42,14 @@ export default function Links() {
     try {
       setDeletingId(id);
       console.log('Deleting link id:', id);
+
+      // Delete and get single or null (maybeSingle) row returned (avoid error if zero rows)
       const { data, error } = await supabase
         .from('releases')
         .delete()
         .eq('id', id)
-        .select(); // To get back deleted row info (optional)
+        .select()
+        .maybeSingle();
 
       if (error) {
         console.error('Supabase deletion error:', error);
@@ -54,18 +57,20 @@ export default function Links() {
         return;
       }
 
-      if (!data || data.length === 0) {
+      if (!data) {
         toast.error("Ссылка не найдена для удаления");
         return;
       }
 
-      setLinks((currentLinks) => currentLinks.filter((link) => link.id !== id));
+      // Refresh the links list to reflect consistent state
+      await fetchLinks();
+
       toast.success("Ссылка удалена");
 
       // Redirect user to main links page if currently at deleted release page
       // Assuming route like "/:slug"
-      const deletedLink = data[0];
-      if (location.pathname === `/${deletedLink.slug}`) {
+      // data.slug is the slug of deleted link
+      if (location.pathname === `/${data.slug}`) {
         navigate("/");
       }
 
