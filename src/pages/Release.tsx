@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,9 +70,15 @@ export default function Release() {
       }
 
       if (data) {
-        // Если есть redirect_url, сразу перенаправляем
+        // If there's a redirect_url, redirect to it
         if (data.redirect_url) {
-          window.location.href = data.redirect_url;
+          // Check if the URL has a protocol, if not add https://
+          const redirectUrl = data.redirect_url.startsWith('http') 
+            ? data.redirect_url 
+            : `https://${data.redirect_url}`;
+            
+          // Use window.location.href for external redirects
+          window.location.href = redirectUrl;
           return;
         }
 
