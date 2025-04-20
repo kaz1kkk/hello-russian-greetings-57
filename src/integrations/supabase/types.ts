@@ -34,6 +34,7 @@ export type Database = {
           created_at: string
           id: string
           links_by_platform: Json
+          redirect_url: string | null
           slug: string
           spotify_url: string
           title: string
@@ -44,6 +45,7 @@ export type Database = {
           created_at?: string
           id?: string
           links_by_platform: Json
+          redirect_url?: string | null
           slug: string
           spotify_url: string
           title: string
@@ -54,6 +56,7 @@ export type Database = {
           created_at?: string
           id?: string
           links_by_platform?: Json
+          redirect_url?: string | null
           slug?: string
           spotify_url?: string
           title?: string
