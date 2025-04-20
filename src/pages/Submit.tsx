@@ -70,11 +70,11 @@ export default function Submit() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 p-4">
-      <div className="w-full max-w-md space-y-6 backdrop-blur-lg bg-white/5 p-8 rounded-2xl border border-white/10">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md space-y-6 glass p-8 rounded-xl">
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-medium text-white">Создать мульти-линк</h1>
-          <p className="text-zinc-400">Используйте Spotify ссылку или UPC/EAN код</p>
+          <h1 className="text-2xl font-medium text-gradient">Создать мульти-линк</h1>
+          <p className="text-muted-foreground">Используйте Spotify ссылку или UPC/EAN код</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -84,15 +84,15 @@ export default function Submit() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Spotify URL или UPC/EAN код"
-              className="w-full bg-white/10 border-white/10 text-white placeholder:text-zinc-500"
+              className="w-full bg-secondary/50 border-secondary text-foreground placeholder:text-muted-foreground"
             />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               Примеры: https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT или 0888880123456
             </p>
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm text-zinc-400">Дополнительные платформы:</p>
+            <p className="text-sm text-muted-foreground">Дополнительные платформы:</p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -102,7 +102,7 @@ export default function Submit() {
                     setSelectedPlatforms(prev => ({ ...prev, yandex: checked as boolean }))
                   }
                 />
-                <Label htmlFor="yandex" className="text-white">Яндекс Музыка</Label>
+                <Label htmlFor="yandex" className="text-foreground">Яндекс Музыка</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -112,21 +112,21 @@ export default function Submit() {
                     setSelectedPlatforms(prev => ({ ...prev, soundcloud: checked as boolean }))
                   }
                 />
-                <Label htmlFor="soundcloud" className="text-white">SoundCloud</Label>
+                <Label htmlFor="soundcloud" className="text-foreground">SoundCloud</Label>
               </div>
             </div>
           </div>
           
           <Button 
             type="submit" 
-            className="w-full bg-white/10 hover:bg-white/20 text-white py-6"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-6"
             disabled={isLoading}
           >
             {isLoading ? "Создаем..." : "Создать мульти-линк"}
           </Button>
           
           {errorMessage && (
-            <p className="text-sm text-red-400 text-center">{errorMessage}</p>
+            <p className="text-sm text-destructive text-center">{errorMessage}</p>
           )}
         </form>
       </div>

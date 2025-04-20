@@ -113,29 +113,29 @@ export default function Release() {
     .sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white p-4">
-      <div className="w-full max-w-md space-y-8 backdrop-blur-xl bg-white/5 p-8 rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.36)] transition-all duration-300">
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4">
+      <div className="w-full max-w-md space-y-8 glass p-8 rounded-xl">
         <div className="flex flex-col items-center">
           <div className="relative group perspective">
             <img 
               src={release.cover_url} 
               alt={release.title}
-              className="w-64 h-64 rounded-xl shadow-2xl transition-all duration-500 group-hover:scale-[1.02] group-hover:rotate-[2deg]"
+              className="w-64 h-64 rounded-xl shadow-xl transition-all duration-500 group-hover:scale-[1.02] group-hover:rotate-[2deg]"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl" />
           </div>
           
           <div className="mt-6 text-center space-y-2">
-            <h1 className="text-2xl font-medium bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent backdrop-blur-sm">
+            <h1 className="text-2xl font-medium text-gradient">
               {release.title}
             </h1>
-            <p className="text-lg text-zinc-400 font-light">{release.artist}</p>
+            <p className="text-lg text-muted-foreground">{release.artist}</p>
           </div>
           
           <Button 
             variant="ghost" 
             size="icon" 
-            className="mt-4 text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-300" 
+            className="mt-4 text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-all duration-300" 
             onClick={handleShare}
           >
             <Share className="w-5 h-5" />
@@ -152,7 +152,7 @@ export default function Release() {
               >
                 <div className="flex items-center gap-2">
                   {platformConfig.icon}
-                  <span className="text-sm font-light">
+                  <span className="text-sm text-muted-foreground">
                     {platformConfig.name}
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export default function Release() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="bg-white/5 hover:bg-white/10 transition-all duration-300"
+                    className="bg-secondary/50 hover:bg-secondary transition-all duration-300"
                   >
                     <Play className="w-4 h-4" />
                   </Button>
