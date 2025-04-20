@@ -119,9 +119,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { spotifyUrl, upc } = await req.json();
+    const { spotifyUrl, upc, platforms } = await req.json();
     
-    console.log('Processing request:', { spotifyUrl, upc });
+    console.log('Processing request:', { spotifyUrl, upc, platforms });
     
     const accessToken = await getSpotifyAccessToken();
     let spotifyId: string | null = null;
@@ -136,10 +136,7 @@ Deno.serve(async (req) => {
         throw new Error('Релиз не найден по UPC коду');
       }
       
-      // For UPC, we always get an album
       spotifyType = 'album';
-      
-      // Get album details
       spotifyDetails = await getSpotifyAlbumDetails(spotifyId, accessToken);
       finalSpotifyUrl = spotifyDetails.spotifyUrl;
       
@@ -152,7 +149,6 @@ Deno.serve(async (req) => {
         throw new Error('Invalid Spotify URL format or missing ID');
       }
       
-      // Determine if it's a track or album URL
       if (spotifyUrl.includes('/track/')) {
         spotifyType = 'track';
         spotifyDetails = await getSpotifyTrackDetails(spotifyId, accessToken);
@@ -172,7 +168,6 @@ Deno.serve(async (req) => {
     
     console.log('Spotify details fetched successfully:', spotifyDetails);
     
-    // Create a slug from the title
     const slug = slugify(spotifyDetails.title);
     
     // Initialize links object with Spotify
@@ -190,11 +185,18 @@ Deno.serve(async (req) => {
       if (response.ok) {
         const data = await response.json();
         
-        // Add other platforms' links
+        // Add other platforms' links based on user selection
         Object.entries(data.linksByPlatform).forEach(([platform, linkData]: [string, any]) => {
-          linksByPlatform[platform] = {
-            url: linkData.url
-          };
+          // Always include Spotify, Apple Music, and YouTube Music
+          if (platform === 'spotify' || 
+              platform === 'appleMusic' || 
+              platform === 'youtubeMusic' ||
+              (platform === 'yandex' && platforms.yandex) ||
+              (platform === 'soundcloud' && platforms.soundcloud)) {
+            linksByPlatform[platform] = {
+              url: linkData.url
+            };
+          }
         });
         
         console.log('Odesli data fetched successfully');

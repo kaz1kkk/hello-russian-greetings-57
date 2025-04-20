@@ -5,20 +5,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function Submit() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [selectedPlatforms, setSelectedPlatforms] = useState({
+    yandex: false,
+    soundcloud: false
+  });
 
   const validateInput = (value: string) => {
-    // Check if it's a Spotify URL
     if (value.includes('spotify.com/')) {
       return value.includes('/track/') || value.includes('/album/');
     }
-    
-    // Check if it's a UPC/EAN code (12-13 digits)
     return /^\d{12,13}$/.test(value);
   };
 
@@ -35,12 +38,18 @@ export default function Submit() {
     setIsLoading(true);
 
     try {
-      // Determine if the input is a Spotify URL or UPC
       const isSpotifyUrl = input.includes('spotify.com/');
       
-      const requestBody = isSpotifyUrl 
-        ? { spotifyUrl: input } 
-        : { upc: input };
+      const requestBody = {
+        ...(isSpotifyUrl ? { spotifyUrl: input } : { upc: input }),
+        platforms: {
+          spotify: true, // Always included
+          appleMusic: true, // Always included
+          youtubeMusic: true, // Always included
+          yandex: selectedPlatforms.yandex,
+          soundcloud: selectedPlatforms.soundcloud
+        }
+      };
       
       const { data, error } = await supabase.functions.invoke('generate-release', {
         body: requestBody
@@ -80,6 +89,32 @@ export default function Submit() {
             <p className="text-xs text-zinc-500">
               Примеры: https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT или 0888880123456
             </p>
+          </div>
+
+          <div className="space-y-4">
+            <p className="text-sm text-zinc-400">Дополнительные платформы:</p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="yandex"
+                  checked={selectedPlatforms.yandex}
+                  onCheckedChange={(checked) => 
+                    setSelectedPlatforms(prev => ({ ...prev, yandex: checked as boolean }))
+                  }
+                />
+                <Label htmlFor="yandex" className="text-white">Яндекс Музыка</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="soundcloud"
+                  checked={selectedPlatforms.soundcloud}
+                  onCheckedChange={(checked) => 
+                    setSelectedPlatforms(prev => ({ ...prev, soundcloud: checked as boolean }))
+                  }
+                />
+                <Label htmlFor="soundcloud" className="text-white">SoundCloud</Label>
+              </div>
+            </div>
           </div>
           
           <Button 
