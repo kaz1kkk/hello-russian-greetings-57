@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -38,6 +37,7 @@ export default function Links() {
   const handleDelete = async (id: string) => {
     try {
       setDeletingId(id);
+      console.log('Deleting link id:', id);
       const { error } = await supabase
         .from('releases')
         .delete()
@@ -45,7 +45,7 @@ export default function Links() {
 
       if (error) throw error;
 
-      setLinks(links.filter((link) => link.id !== id));
+      setLinks((currentLinks) => currentLinks.filter((link) => link.id !== id));
       toast.success("Ссылка удалена");
     } catch (error: any) {
       console.error('Error deleting link:', error);
