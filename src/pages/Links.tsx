@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -69,13 +70,12 @@ export default function Links() {
       setDeletingId(id);
       console.log("Deleting link id:", id);
 
-      const { error } = await supabase
-        .from("releases")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.functions.invoke('delete-release', {
+        body: { id }
+      });
 
       if (error) {
-        console.error("Supabase deletion error:", error);
+        console.error("Delete function error:", error);
         toast.error(`Не удалось удалить ссылку: ${error.message}`);
         return;
       }
