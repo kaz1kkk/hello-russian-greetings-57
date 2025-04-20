@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,34 +69,14 @@ export default function Submit() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast.success('Вы успешно вышли из аккаунта');
-    } catch (error: any) {
-      toast.error('Ошибка при выходе из аккаунта');
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md space-y-6 glass p-8 rounded-xl">
-        <div className="flex justify-end">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Выйти
-          </Button>
-        </div>
-        
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-medium text-gradient">Создать мульти-линк</h1>
-          <p className="text-muted-foreground">Используйте Spotify ссылку или UPC/EAN код</p>
-        </div>
-        
+    <div className="container mx-auto py-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-medium mb-2">Создать мульти-ссылку</h1>
+        <p className="text-muted-foreground">Используйте Spotify ссылку или UPC/EAN код</p>
+      </div>
+      
+      <div className="max-w-md space-y-6 bg-background p-8 rounded-xl border">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Input
@@ -103,7 +84,7 @@ export default function Submit() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Spotify URL или UPC/EAN код"
-              className="w-full bg-secondary/50 border-secondary text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-secondary/50 border-secondary"
             />
             <p className="text-xs text-muted-foreground">
               Примеры: https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT или 0888880123456
@@ -111,7 +92,7 @@ export default function Submit() {
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Д��полнительные платформы:</p>
+            <p className="text-sm text-muted-foreground">Дополнительные платформы:</p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -121,7 +102,7 @@ export default function Submit() {
                     setSelectedPlatforms(prev => ({ ...prev, yandex: checked as boolean }))
                   }
                 />
-                <Label htmlFor="yandex" className="text-foreground">Яндекс Музыка</Label>
+                <Label htmlFor="yandex">Яндекс Музыка</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -131,7 +112,7 @@ export default function Submit() {
                     setSelectedPlatforms(prev => ({ ...prev, soundcloud: checked as boolean }))
                   }
                 />
-                <Label htmlFor="soundcloud" className="text-foreground">SoundCloud</Label>
+                <Label htmlFor="soundcloud">SoundCloud</Label>
               </div>
             </div>
           </div>
@@ -141,7 +122,7 @@ export default function Submit() {
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-6"
             disabled={isLoading}
           >
-            {isLoading ? "Создаем..." : "Создать мульти-линк"}
+            {isLoading ? "Создаем..." : "Создать мульти-ссылку"}
           </Button>
           
           {errorMessage && (

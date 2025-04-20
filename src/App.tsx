@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import Submit from "./pages/Submit";
+import Links from "./pages/Links";
 import Release from "./pages/Release";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -42,9 +43,11 @@ const App = () => (
                   path="/"
                   element={
                     <ProtectedRoute>
-                      <AppSidebar />
-                      <div className="flex-1 p-6">
-                        <Submit />
+                      <div className="flex w-full">
+                        <AppSidebar />
+                        <div className="flex-1 p-6">
+                          <Links />
+                        </div>
                       </div>
                     </ProtectedRoute>
                   }
@@ -53,9 +56,11 @@ const App = () => (
                   path="/submit"
                   element={
                     <ProtectedRoute>
-                      <AppSidebar />
-                      <div className="flex-1 p-6">
-                        <Submit />
+                      <div className="flex w-full">
+                        <AppSidebar />
+                        <div className="flex-1 p-6">
+                          <Submit />
+                        </div>
                       </div>
                     </ProtectedRoute>
                   }
