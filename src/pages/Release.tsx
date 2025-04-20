@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +10,7 @@ import { toast } from "sonner";
 import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d7387562db4f.png";
 import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d79b2492d1.png";
 import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
-import SoundCloudLogo from "/public/lovable-uploads/f6df5db5-3c07-4025-9ce2-ae89bce14884.png";
+import SoundCloudLogo from "/public/lovable-uploads/fb0190c9-a778-48b7-a175-1fc791cb16a8.png"; // Updated SoundCloud logo
 import YandexLogo from "/public/lovable-uploads/fb0190c9-a778-48b7-a175-1fc791cb16a8.png";
 import VKMusicLogo from "/public/lovable-uploads/c2513543-25d6-4eea-b7c6-c4e530cfd711.png";
 
