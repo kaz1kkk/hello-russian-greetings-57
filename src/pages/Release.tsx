@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,53 +59,63 @@ export default function Release() {
 
   useEffect(() => {
     async function fetchRelease() {
-      const { data, error } = await supabase
-        .from('releases')
-        .select()
-        .eq('slug', slug)
-        .maybeSingle();
+      if (!slug) return;
+      
+      setIsLoading(true);
+      
+      try {
+        const { data, error } = await supabase
+          .from('releases')
+          .select()
+          .eq('slug', slug)
+          .maybeSingle();
 
-      if (error) {
-        console.error('Error:', error);
-        return;
-      }
-
-      if (data) {
-        if (data.redirect_url) {
-          const redirectUrl = data.redirect_url.startsWith('http') 
-            ? data.redirect_url 
-            : `https://${data.redirect_url}`;
-            
-          window.location.href = redirectUrl;
+        if (error) {
+          console.error('Error:', error);
+          setIsLoading(false);
           return;
         }
 
-        const links = typeof data.links_by_platform === 'string' 
-          ? JSON.parse(data.links_by_platform) 
-          : data.links_by_platform;
+        if (data) {
+          if (data.redirect_url) {
+            const redirectUrl = data.redirect_url.startsWith('http') 
+              ? data.redirect_url 
+              : `https://${data.redirect_url}`;
+              
+            window.location.href = redirectUrl;
+            return;
+          }
 
-        setRelease({
-          title: data.title,
-          artist: data.artist || "Unknown Artist",
-          cover_url: data.cover_url,
-          redirect_url: data.redirect_url,
-          links_by_platform: links
-        });
+          const links = typeof data.links_by_platform === 'string' 
+            ? JSON.parse(data.links_by_platform) 
+            : data.links_by_platform;
 
-        // Update document title and meta tags
-        document.title = `${data.artist} - ${data.title}`;
-        // Update meta tags
-        updateMetaTags(data.title, data.artist, data.cover_url);
+          setRelease({
+            title: data.title,
+            artist: data.artist || "Unknown Artist",
+            cover_url: data.cover_url,
+            redirect_url: data.redirect_url,
+            links_by_platform: links
+          });
+
+          // Update document title and meta tags
+          document.title = `${data.artist} - ${data.title}`;
+          // Update meta tags
+          updateMetaTags(data.title, data.artist, data.cover_url);
+        }
+      } catch (error) {
+        console.error('Error fetching release:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
+
+    fetchRelease();
 
     // Reset title when component unmounts
     return () => {
       document.title = "Music Label Multi-Links";
     };
-
-    fetchRelease();
   }, [slug]);
 
   // Function to update meta tags
@@ -138,6 +149,8 @@ export default function Release() {
   };
 
   const handleShare = async () => {
+    if (!release) return;
+    
     const currentUrl = window.location.href;
     
     if (navigator.share) {
@@ -160,6 +173,26 @@ export default function Release() {
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center w-full bg-background text-foreground">
+        <div className="text-center">
+          <p className="text-muted-foreground">Загрузка...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!release) {
+    return (
+      <div className="min-h-screen flex items-center justify-center w-full bg-background text-foreground">
+        <div className="text-center">
+          <p className="text-muted-foreground">Релиз не найден</p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredLinks = Object.entries(release.links_by_platform)
     .filter(([platform]) => platform in ALLOWED_PLATFORMS)
