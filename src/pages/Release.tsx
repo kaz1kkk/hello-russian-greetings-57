@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Share, Music } from "lucide-react";
+import { Share, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -24,33 +24,27 @@ interface Release {
 const ALLOWED_PLATFORMS = {
   spotify: {
     name: "Spotify",
-    icon: <img src={SpotifyLogo} alt="Spotify" className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <img src={SpotifyLogo} alt="Spotify" className="w-5 h-5" />,
   },
   appleMusic: {
     name: "Apple Music",
-    icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-5 h-5" />,
   },
   youtubeMusic: {
     name: "YouTube Music",
-    icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-5 h-5" />,
   },
   yandex: {
     name: "Яндекс Музыка",
-    icon: <img src={YandexLogo} alt="Yandex Music" className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <Music className="w-5 h-5" />,
   },
   soundcloud: {
     name: "SoundCloud",
-    icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-5 h-5" />,
   },
   vk: {
     name: "VK Музыка",
-    icon: <Music className="w-6 h-6" />,
-    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
+    icon: <Music className="w-5 h-5" />,
   }
 };
 
@@ -146,31 +140,35 @@ export default function Release() {
           </Button>
         </div>
 
-        <div className="space-y-3 w-full">
+        <div className="space-y-4 w-full">
           {filteredLinks.map(([platform, { url }]) => {
             const platformConfig = ALLOWED_PLATFORMS[platform as keyof typeof ALLOWED_PLATFORMS];
             return (
-              <a 
+              <div 
                 key={platform}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block"
+                className="flex items-center justify-between gap-4"
               >
-                <Button
-                  className={`w-full relative ${platformConfig.color} transition-all duration-300 ease-out 
-                    text-white z-10 border-0 
-                    hover:translate-y-[-2px] hover:scale-[1.01]`}
-                  asChild
+                <div className="flex items-center gap-2">
+                  {platformConfig.icon}
+                  <span className="text-sm font-light">
+                    {platformConfig.name}
+                  </span>
+                </div>
+                <a 
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group"
                 >
-                  <div className="flex items-center justify-center gap-3 py-6">
-                    {platformConfig.icon}
-                    <span className="text-base font-light">
-                      {`Слушать в ${platformConfig.name}`}
-                    </span>
-                  </div>
-                </Button>
-              </a>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-white/5 hover:bg-white/10 transition-all duration-300"
+                  >
+                    <Play className="w-4 h-4" />
+                  </Button>
+                </a>
+              </div>
             );
           })}
         </div>
