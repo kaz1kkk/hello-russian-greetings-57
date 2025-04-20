@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Share, Play } from "lucide-react";
+import { Share, Play, Music } from "lucide-react"; // Added Music import
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -45,7 +45,7 @@ const ALLOWED_PLATFORMS = {
   },
   vk: {
     name: "VK Музыка",
-    icon: <Music className="w-5 h-5" />,
+    icon: <Music className="w-5 h-5" />, // Using imported Music icon
   }
 };
 
