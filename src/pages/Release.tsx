@@ -112,28 +112,28 @@ export default function Release() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-zinc-800 text-white p-4">
-      <div className="w-full max-w-md space-y-8 backdrop-blur-lg bg-white/5 p-8 rounded-2xl border border-white/10">
+      <div className="w-full max-w-md space-y-8 backdrop-blur-xl bg-white/5 p-8 rounded-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.36)] transition-all duration-300 hover:shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
         <div className="flex flex-col items-center">
-          <div className="relative group">
+          <div className="relative group perspective">
             <img 
               src={release.cover_url} 
               alt={release.title}
-              className="w-64 h-64 rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+              className="w-64 h-64 rounded-xl shadow-2xl transition-all duration-500 group-hover:scale-[1.02] group-hover:rotate-[2deg]"
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-xl" />
           </div>
           
           <div className="mt-6 text-center space-y-2">
-            <h1 className="text-2xl font-medium bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-medium bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent backdrop-blur-sm">
               {release.title}
             </h1>
-            <p className="text-lg text-zinc-400">{release.artist}</p>
+            <p className="text-lg text-zinc-400 font-light">{release.artist}</p>
           </div>
           
           <Button 
             variant="ghost" 
             size="icon" 
-            className="mt-4 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" 
+            className="mt-4 text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-300" 
             onClick={handleShare}
           >
             <Share className="w-5 h-5" />
@@ -144,25 +144,30 @@ export default function Release() {
           {filteredLinks.map(([platform, { url }]) => {
             const platformConfig = ALLOWED_PLATFORMS[platform as keyof typeof ALLOWED_PLATFORMS];
             return (
-              <Button
+              <a 
                 key={platform}
-                className={`w-full ${platformConfig.color} transition-all duration-300 ease-in-out 
-                  shadow-lg hover:shadow-xl text-white 
-                  border border-white/10 hover:border-white/20`}
-                asChild
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block relative"
               >
-                <a 
-                  href={url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex items-center justify-center gap-3 py-6"
+                <div className="absolute -inset-0.5 bg-white opacity-20 rounded-xl blur-sm transition-all duration-500 animate-pulse group-hover:opacity-30" />
+                <div className="absolute inset-0 rounded-xl border border-white/20 animate-[border-glow_2s_ease-in-out_infinite]" />
+                <Button
+                  className={`w-full relative ${platformConfig.color} transition-all duration-300 ease-out 
+                    shadow-lg hover:shadow-xl text-white z-10 border-0
+                    bg-opacity-90 hover:bg-opacity-100 backdrop-blur-sm
+                    hover:translate-y-[-2px] hover:scale-[1.01]`}
+                  asChild
                 >
-                  {platformConfig.icon}
-                  <span className="text-base">
-                    {`Слушать в ${platformConfig.name}`}
-                  </span>
-                </a>
-              </Button>
+                  <div className="flex items-center justify-center gap-3 py-6">
+                    {platformConfig.icon}
+                    <span className="text-base font-light">
+                      {`Слушать в ${platformConfig.name}`}
+                    </span>
+                  </div>
+                </Button>
+              </a>
             );
           })}
         </div>

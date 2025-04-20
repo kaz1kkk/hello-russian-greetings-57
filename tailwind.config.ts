@@ -84,11 +84,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				"border-glow": {
+					"0%, 100%": {
+						"box-shadow": "0 0 0 0 rgba(255, 255, 255, 0.7)",
+					},
+					"50%": {
+						"box-shadow": "0 0 20px 2px rgba(255, 255, 255, 0.3)",
+					},
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				"border-glow": "border-glow 2s ease-in-out infinite",
 			}
 		}
 	},
