@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Share, Play, Music } from "lucide-react"; // Added Music import
+import { Share, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -12,6 +11,7 @@ import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d7
 import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
 import SoundCloudLogo from "/public/lovable-uploads/f6df5db5-3c07-4025-9ce2-ae89bce14884.png";
 import YandexLogo from "/public/lovable-uploads/fb0190c9-a778-48b7-a175-1fc791cb16a8.png";
+import VKMusicLogo from "/public/lovable-uploads/c2513543-25d6-4eea-b7c6-c4e530cfd711.png";
 
 interface Release {
   title: string;
@@ -45,7 +45,7 @@ const ALLOWED_PLATFORMS = {
   },
   vk: {
     name: "VK Музыка",
-    icon: <Music className="w-5 h-5" />, // Using imported Music icon
+    icon: <img src={VKMusicLogo} alt="VK Music" className="w-5 h-5" />,
   }
 };
 

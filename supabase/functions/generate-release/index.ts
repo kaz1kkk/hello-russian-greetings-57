@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0';
 import { slugify } from 'https://deno.land/x/slugify@0.3.0/mod.ts';
 
@@ -22,6 +21,30 @@ async function getSpotifyAccessToken(): Promise<string> {
 
   const data = await response.json();
   return data.access_token;
+}
+
+async function getSpotifyIdFromUPC(upc: string, accessToken: string): Promise<string | null> {
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=upc:${upc}&type=album`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to search Spotify by UPC');
+    }
+
+    const data = await response.json();
+    if (data.albums.items.length > 0) {
+      return data.albums.items[0].id;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error searching by UPC:', error);
+    return null;
+  }
 }
 
 // Extract Spotify ID from various URL formats
@@ -109,15 +132,32 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { spotifyUrl } = await req.json();
+    const { spotifyUrl, upc } = await req.json();
     
-    if (!spotifyUrl || typeof spotifyUrl !== 'string') {
-      throw new Error('Invalid or missing spotifyUrl');
+    if (!spotifyUrl && !upc) {
+      throw new Error('Invalid or missing spotifyUrl or UPC');
     }
     
-    console.log('Processing Spotify URL:', spotifyUrl);
+    console.log('Processing request:', { spotifyUrl, upc });
     
-    // Fetch Spotify track details first
+    const accessToken = await getSpotifyAccessToken();
+    let spotifyId: string | null = null;
+
+    if (upc) {
+      spotifyId = await getSpotifyIdFromUPC(upc, accessToken);
+      if (!spotifyId) {
+        throw new Error('Релиз не найден по UPC коду');
+      }
+    } else {
+      spotifyId = extractSpotifyId(spotifyUrl);
+    }
+
+    if (!spotifyId) {
+      throw new Error('Invalid Spotify URL format or missing ID');
+    }
+    
+    console.log('Spotify ID:', spotifyId);
+
     const spotifyDetails = await getSpotifyTrackDetails(spotifyUrl);
     console.log('Spotify details fetched successfully:', spotifyDetails);
     
