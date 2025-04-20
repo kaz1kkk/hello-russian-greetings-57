@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -112,8 +113,8 @@ export default function Release() {
     .sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4">
-      <div className="w-full max-w-md space-y-8 glass p-8 rounded-xl">
+    <div className="min-h-screen flex items-center justify-center w-full bg-background text-foreground p-4">
+      <div className="w-full max-w-md space-y-8 glass p-8 rounded-xl mx-auto">
         <div className="flex flex-col items-center">
           <div className="relative group perspective">
             <img 

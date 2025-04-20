@@ -33,42 +33,40 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <SidebarProvider>
-            <div className="min-h-screen flex w-full">
-              <Routes>
-                <Route
-                  path="/auth"
-                  element={<Auth />}
-                />
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <div className="flex w-full">
-                        <AppSidebar />
-                        <div className="flex-1 p-6">
-                          <Links />
-                        </div>
+            <Routes>
+              <Route
+                path="/auth"
+                element={<Auth />}
+              />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <div className="flex w-full">
+                      <AppSidebar />
+                      <div className="flex-1 p-6">
+                        <Links />
                       </div>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/submit"
-                  element={
-                    <ProtectedRoute>
-                      <div className="flex w-full">
-                        <AppSidebar />
-                        <div className="flex-1 p-6">
-                          <Submit />
-                        </div>
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/submit"
+                element={
+                  <ProtectedRoute>
+                    <div className="flex w-full">
+                      <AppSidebar />
+                      <div className="flex-1 p-6">
+                        <Submit />
                       </div>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/:slug" element={<Release />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/:slug" element={<Release />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </SidebarProvider>
         </BrowserRouter>
       </TooltipProvider>

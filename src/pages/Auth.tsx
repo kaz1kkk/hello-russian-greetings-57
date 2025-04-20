@@ -43,8 +43,8 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-md">
+    <div className="w-full min-h-screen bg-background flex items-center justify-center">
+      <Card className="w-full max-w-md mx-auto">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Вход в аккаунт</CardTitle>
           <CardDescription>
