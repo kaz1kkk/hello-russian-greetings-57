@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -13,6 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { RefreshCcw, Trash2, Save } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Links() {
   const [links, setLinks] = useState<any[]>([]);
@@ -59,12 +69,10 @@ export default function Links() {
       setDeletingId(id);
       console.log("Deleting link id:", id);
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("releases")
         .delete()
-        .eq("id", id)
-        .select()
-        .maybeSingle();
+        .eq("id", id);
 
       if (error) {
         console.error("Supabase deletion error:", error);
@@ -72,16 +80,11 @@ export default function Links() {
         return;
       }
 
-      if (!data) {
-        toast.error("Ссылка не найдена для удаления");
-        return;
-      }
-
       await fetchLinks();
-
       toast.success("Ссылка удалена");
 
-      if (location.pathname === `/${data.slug}`) {
+      const deletedLink = links.find(link => link.id === id);
+      if (deletedLink && location.pathname === `/${deletedLink.slug}`) {
         navigate("/");
       }
     } catch (error: any) {
@@ -258,19 +261,38 @@ export default function Links() {
                       <RefreshCcw className="h-4 w-4" />
                     )}
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(link.id)}
-                    disabled={deletingId === link.id}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    {deletingId === link.id ? (
-                      <span className="animate-spin">⟳</span>
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Удалить ссылку?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Это действие нельзя отменить. Ссылка будет удалена навсегда.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(link.id)}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          {deletingId === link.id ? (
+                            <span className="animate-spin">⟳</span>
+                          ) : (
+                            "Удалить"
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))}

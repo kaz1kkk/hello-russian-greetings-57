@@ -1,10 +1,6 @@
-
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Share, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 // Import platform logos
 import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d7387562db4f.png";
@@ -18,6 +14,7 @@ interface Release {
   title: string;
   artist: string;
   cover_url: string;
+  redirect_url: string | null;
   links_by_platform: {
     [key: string]: { url: string; }
   };
@@ -52,6 +49,7 @@ const ALLOWED_PLATFORMS = {
 
 export default function Release() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [release, setRelease] = useState<Release | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,24 +59,32 @@ export default function Release() {
         .from('releases')
         .select()
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error:', error);
         return;
       }
 
-      // Cast the JSON data to our expected type
-      const links = typeof data.links_by_platform === 'string' 
-        ? JSON.parse(data.links_by_platform) 
-        : data.links_by_platform;
+      if (data) {
+        // Если есть redirect_url, сразу перенаправляем
+        if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+          return;
+        }
 
-      setRelease({
-        title: data.title,
-        artist: data.artist || "Unknown Artist", // Provide default in case artist is missing
-        cover_url: data.cover_url,
-        links_by_platform: links
-      });
+        const links = typeof data.links_by_platform === 'string' 
+          ? JSON.parse(data.links_by_platform) 
+          : data.links_by_platform;
+
+        setRelease({
+          title: data.title,
+          artist: data.artist || "Unknown Artist",
+          cover_url: data.cover_url,
+          redirect_url: data.redirect_url,
+          links_by_platform: links
+        });
+      }
       setIsLoading(false);
     }
 
