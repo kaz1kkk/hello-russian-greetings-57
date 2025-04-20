@@ -8,9 +8,10 @@ import { toast } from "sonner";
 import { RefreshCcw, Trash2 } from "lucide-react";
 
 export default function Links() {
-  const [links, setLinks] = useState([]);
+  const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [rescanningId, setRescanningId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLinks();
@@ -36,6 +37,7 @@ export default function Links() {
 
   const handleDelete = async (id: string) => {
     try {
+      setDeletingId(id);
       const { error } = await supabase
         .from('releases')
         .delete()
@@ -43,18 +45,20 @@ export default function Links() {
 
       if (error) throw error;
 
-      setLinks(links.filter((link: any) => link.id !== id));
+      setLinks(links.filter((link) => link.id !== id));
       toast.success("Ссылка удалена");
     } catch (error: any) {
       console.error('Error deleting link:', error);
       toast.error("Не удалось удалить ссылку");
+    } finally {
+      setDeletingId(null);
     }
   };
 
   const handleRescan = async (id: string) => {
     try {
       setRescanningId(id);
-      const link = links.find((l: any) => l.id === id);
+      const link = links.find((l) => l.id === id);
       
       if (!link) throw new Error("Ссылка не найдена");
 
@@ -103,7 +107,7 @@ export default function Links() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {links.map((link: any) => (
+            {links.map((link) => (
               <TableRow key={link.id}>
                 <TableCell className="font-medium">{link.slug}</TableCell>
                 <TableCell>{link.title || "Без названия"}</TableCell>
@@ -126,15 +130,24 @@ export default function Links() {
                     onClick={() => handleRescan(link.id)}
                     disabled={rescanningId === link.id}
                   >
-                    <RefreshCcw className="h-4 w-4" />
+                    {rescanningId === link.id ? (
+                      <span className="animate-spin">⟳</span>
+                    ) : (
+                      <RefreshCcw className="h-4 w-4" />
+                    )}
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleDelete(link.id)}
+                    disabled={deletingId === link.id}
                     className="text-destructive hover:text-destructive"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    {deletingId === link.id ? (
+                      <span className="animate-spin">⟳</span>
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
                   </Button>
                 </TableCell>
               </TableRow>
