@@ -10,6 +10,7 @@ import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d738756
 import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d79b2492d1.png";
 import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
 import SoundCloudLogo from "/public/lovable-uploads/51d1f125-cff2-4caf-af99-1d80739b289b.png";
+import YandexLogo from "/public/lovable-uploads/3dcf4513-80ca-4e24-8830-7e5cc02a1534.png";
 
 interface Release {
   title: string;
@@ -20,37 +21,36 @@ interface Release {
   };
 }
 
-// Update ALLOWED_PLATFORMS with new logos
 const ALLOWED_PLATFORMS = {
   spotify: {
     name: "Spotify",
     icon: <img src={SpotifyLogo} alt="Spotify" className="w-8 h-8" />,
-    color: "bg-[#1DB954]"
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   appleMusic: {
     name: "Apple Music",
     icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-8 h-8" />,
-    color: "bg-[#fb233b]"
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   youtubeMusic: {
     name: "YouTube Music",
     icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-8 h-8" />,
-    color: "bg-[#FF0000]"
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   yandex: {
     name: "Яндекс Музыка",
-    icon: <Music className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#FFCC00]/90 to-[#FFCC00]/70 hover:from-[#FFCC00] hover:to-[#FFCC00] text-black"
+    icon: <img src={YandexLogo} alt="Yandex Music" className="w-8 h-8" />,
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   soundcloud: {
     name: "SoundCloud",
     icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-8 h-8" />,
-    color: "bg-[#ff5500]"
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   },
   vk: {
     name: "VK Музыка",
     icon: <Music className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#0077FF]/90 to-[#0077FF]/70 hover:from-[#0077FF] hover:to-[#0077FF]"
+    color: "bg-gradient-to-r from-zinc-900 to-zinc-800"
   }
 };
 
