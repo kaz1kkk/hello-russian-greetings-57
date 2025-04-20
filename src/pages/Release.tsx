@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -136,6 +135,30 @@ export default function Release() {
       }
       element.setAttribute('content', content);
     });
+  };
+
+  const handleShare = async () => {
+    const currentUrl = window.location.href;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: release.title,
+          text: `Слушай релиз "${release.title}" на любимой платформе`,
+          url: currentUrl,
+        });
+      } catch (error) {
+        console.error('Ошибка при шаринге:', error);
+        toast.error("Не удалось поделиться");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(currentUrl);
+        toast.success("Ссылка скопирована в буфер обмена");
+      } catch {
+        toast.error("Не удалось скопировать ссылку");
+      }
+    }
   };
 
   const filteredLinks = Object.entries(release.links_by_platform)
