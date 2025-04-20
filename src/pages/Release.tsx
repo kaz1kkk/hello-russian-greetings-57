@@ -1,10 +1,15 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Apple, Youtube, Music, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+
+// Import platform logos
+import SpotifyLogo from "/public/lovable-uploads/77e9518d-1cd7-4236-9010-d7387562db4f.png";
+import AppleMusicLogo from "/public/lovable-uploads/ad5fe374-e379-4ec0-a036-e8d79b2492d1.png";
+import YoutubeMusicLogo from "/public/lovable-uploads/06bc136f-5266-4959-be9f-5057f8f3b613.png";
+import SoundCloudLogo from "/public/lovable-uploads/51d1f125-cff2-4caf-af99-1d80739b289b.png";
 
 interface Release {
   title: string;
@@ -15,21 +20,22 @@ interface Release {
   };
 }
 
+// Update ALLOWED_PLATFORMS with new logos
 const ALLOWED_PLATFORMS = {
   spotify: {
     name: "Spotify",
-    icon: <Music className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#1DB954]/90 to-[#1DB954]/70 hover:from-[#1DB954] hover:to-[#1DB954]"
+    icon: <img src={SpotifyLogo} alt="Spotify" className="w-8 h-8" />,
+    color: "bg-[#1DB954]"
   },
   appleMusic: {
     name: "Apple Music",
-    icon: <Apple className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#fb233b]/90 to-[#fb233b]/70 hover:from-[#fb233b] hover:to-[#fb233b]"
+    icon: <img src={AppleMusicLogo} alt="Apple Music" className="w-8 h-8" />,
+    color: "bg-[#fb233b]"
   },
   youtubeMusic: {
     name: "YouTube Music",
-    icon: <Youtube className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#FF0000]/90 to-[#FF0000]/70 hover:from-[#FF0000] hover:to-[#FF0000]"
+    icon: <img src={YoutubeMusicLogo} alt="YouTube Music" className="w-8 h-8" />,
+    color: "bg-[#FF0000]"
   },
   yandex: {
     name: "Яндекс Музыка",
@@ -38,8 +44,8 @@ const ALLOWED_PLATFORMS = {
   },
   soundcloud: {
     name: "SoundCloud",
-    icon: <Music className="w-6 h-6" />,
-    color: "bg-gradient-to-br from-[#ff5500]/90 to-[#ff5500]/70 hover:from-[#ff5500] hover:to-[#ff5500]"
+    icon: <img src={SoundCloudLogo} alt="SoundCloud" className="w-8 h-8" />,
+    color: "bg-[#ff5500]"
   },
   vk: {
     name: "VK Музыка",
