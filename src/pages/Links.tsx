@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { RefreshCcw, Trash2 } from "lucide-react";
 
@@ -12,6 +12,9 @@ export default function Links() {
   const [loading, setLoading] = useState(true);
   const [rescanningId, setRescanningId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchLinks();
@@ -58,6 +61,14 @@ export default function Links() {
 
       setLinks((currentLinks) => currentLinks.filter((link) => link.id !== id));
       toast.success("Ссылка удалена");
+
+      // Redirect user to main links page if currently at deleted release page
+      // Assuming route like "/:slug"
+      const deletedLink = data[0];
+      if (location.pathname === `/${deletedLink.slug}`) {
+        navigate("/");
+      }
+
     } catch (error: any) {
       console.error('Error deleting link:', error);
       toast.error("Не удалось удалить ссылку");
