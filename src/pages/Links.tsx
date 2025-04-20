@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -38,12 +39,22 @@ export default function Links() {
     try {
       setDeletingId(id);
       console.log('Deleting link id:', id);
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('releases')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select(); // To get back deleted row info (optional)
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase deletion error:', error);
+        toast.error(`Не удалось удалить ссылку: ${error.message}`);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        toast.error("Ссылка не найдена для удаления");
+        return;
+      }
 
       setLinks((currentLinks) => currentLinks.filter((link) => link.id !== id));
       toast.success("Ссылка удалена");
@@ -59,7 +70,6 @@ export default function Links() {
     try {
       setRescanningId(id);
       const link = links.find((l) => l.id === id);
-      
       if (!link) throw new Error("Ссылка не найдена");
 
       const { error } = await supabase.functions.invoke('generate-release', {
